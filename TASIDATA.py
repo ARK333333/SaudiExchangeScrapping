@@ -22,6 +22,6 @@ High = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tb
 Low = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tbody/tr//td[10]')
 df = pd.DataFrame(columns =["TickersID", "Price", "Trade Change Value", "Trade Change Percentage", "Number of Trades","Volume Traded","Open","High","Low"])
 for i in range(len(TickersID)):
-    df = df._append({'TickersID': TickersID[i].text.rsplit('\r',1)[1], 'Price':Prices[i].text, 'Trade Change Value': TradeChangeValue[i].text, 'Trade Change Percentage': TradeChangePercentage[i].text, 'Number of Trades': NumberOfTrades[i].text, 'Volume Traded': VolumesTraded[i].text,'Open': Open[i].text, 'High': High[i].text, 'Low': Low[i].text}, ignore_index = True)
+    df = df._append({'TickersID': TickersID[i].text, 'Price':Prices[i].text, 'Trade Change Value': TradeChangeValue[i].text, 'Trade Change Percentage': TradeChangePercentage[i].text, 'Number of Trades': NumberOfTrades[i].text, 'Volume Traded': VolumesTraded[i].text,'Open': Open[i].text, 'High': High[i].text, 'Low': Low[i].text}, ignore_index = True)
 
 df.to_json(orient='index', path_or_buf="TasiExtract.json")
