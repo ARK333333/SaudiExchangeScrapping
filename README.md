@@ -1,6 +1,5 @@
 # SaudiExchangeScrapping
-Python program that web scraps the Saudi exchange site into a JSON file. 
-The program currently targets the following cells:
+A Python program that utilizes Selenium and Pandas to scrap the following Saudi Exchange's fields from the main market page: 
 - Ticker identifier  
 - Last trade 
 	- Price 
