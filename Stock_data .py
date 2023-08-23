@@ -6,6 +6,7 @@ import pandas as pd
 import sqlalchemy
 # URL source
 url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/ourmarkets/main-market-watch'
+url2 = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/ourmarkets/main-market-watch/theoritical-market-watch-today?locale=en'
 
 # initate WebDriver and get the targeted website URl
 driver = webdriver.Chrome(service=Service('/Users/malsaif/Documents/chromedriver-mac-x64/chromedriver'))
@@ -22,10 +23,22 @@ Open = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tb
 High = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tbody/tr//td[9]')
 Low = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tbody/tr//td[10]')
 
+
 # Transferring data into a dataframe using Panda
-df = pd.DataFrame(columns =["TickersID", "Price", "Trade Change Value", "Trade Change Percentage", "Number of Trades","Volume Traded","Open","High","Low"])
+df = pd.DataFrame(columns =["TickersID", "Price", "Trade Change Value", "Trade Change Percentage", "Number of Trades","Volume Traded","Open","High","Low", "PrevClose"])
+
 for i in range(len(TickersID)):
     df = df._append({'TickersID': TickersID[i].text, 'Price':Prices[i].text, 'Trade Change Value': TradeChangeValue[i].text, 'Trade Change Percentage': TradeChangePercentage[i].text, 'Number of Trades': NumberOfTrades[i].text, 'Volume Traded': VolumesTraded[i].text,'Open': Open[i].text, 'High': High[i].text, 'Low': Low[i].text}, ignore_index = True)
 
+
+driver = webdriver.Chrome(service=Service('/Users/malsaif/Documents/chromedriver-mac-x64/chromedriver'))
+driver.get(url2)
+PrevClose = driver.find_elements(By.XPATH, '//*[@id="theoreticalTableId"]//tbody//tr//td[3]')
+for i in range(len(PrevClose)):
+    df = df._append( {"PrevClose": PrevClose[i]}, ignore_index = True)
+
+
+
+
 # Exporting the dataframe into an index format JSON file named "TasiExtract".
-df.to_json(orient='index', path_or_buf="TasiExtract.json")
+df.to_json(orient='index', path_or_buf="TasiStockDataExtract.json")
