@@ -9,7 +9,7 @@ url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/ourmarkets/main-mar
 
 # initate WebDriver and get the targeted website URl
 driver = webdriver.Chrome(service=Service('/Users/malsaif/Documents/chromedriver-mac-x64/chromedriver'))
-driver.get(url)
+driver.get(url) 
 
 #Scrapping Parts, different desired parts of the table. They are located using their XPATHs
 TickersID = driver.find_elements(By.XPATH, '//div[@class="dataTables_scrollBody"]//tbody/tr//td[1]')

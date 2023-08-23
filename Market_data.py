@@ -11,7 +11,7 @@ url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/ourmarkets/main-mar
 # initate WebDriver and get the targeted website URl
 driver = webdriver.Chrome(service=Service('/Users/malsaif/Documents/chromedriver-mac-x64/chromedriver'))
 driver.get(url)
-
+# Web scraping addresses + segments operations for parts needed
 Value = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[2]/div[3]/div/div/table/tbody/tr/td[2]')
 ChangeValue = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[1]/div/div[2]').get_attribute("innerHTML").split("<i></i>")[1].split('(')[0]
 ChangeRatio = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[2]/div[3]/div/div/table/tbody/tr/td[3]')
