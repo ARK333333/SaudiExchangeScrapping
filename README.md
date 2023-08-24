@@ -1,14 +1,33 @@
 # SaudiExchangeScrapping
-A Python program that utilizes Selenium and Pandas to scrap the following Saudi Exchange's fields from the main market page: 
-- Ticker identifier  
-- Last trade 
-	- Price 
-	- Trade change value
-	- Trade change percentage 
-- Cumulative
-	- Number of trades 
-	- Volume traded 
-- Today's
-	- High
-	- Low
-	- Open
+Three Python programs that utilizes Selenium and Pandas to scrap the following Saudi Exchange's fields from the main market page: 
+- StockData.py:
+	- Ticker identifier  
+	- Last trade 
+		- Price 
+		- Trade change value
+			- Trade change percentage 
+	- Cumulative
+		- Number of trades 
+		- Volume traded 
+	- Today's
+		- High
+		- Low
+		- Open
+	- Previous close (**In progress**)
+	- Traded value (**In progress**)
+- MarketData.py:
+	- Value 
+	- Change value 
+	- Change ratio 
+	- Trade volume 
+	- Trades volume 
+	- price to earnings (**In progress**)
+	- book value multiplier (**In progress**)
+	- Open 
+	- Close 
+	- High 
+	- Low 
+- SectorData:
+	- Sector ticker identifier
+	- Change value
+	- Change ratio

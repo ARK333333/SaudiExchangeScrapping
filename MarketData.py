@@ -28,5 +28,5 @@ BVM = 0  # driver.find_elements(By.XPATH, '')
 df = pd.DataFrame(columns =["Value", "ChangeValue", "ChangeRatio", "TradeVolume", "TradesVolume", "PTE", "BVM", "Open", "Close"])
 df = df._append({'Value': Value.text, 'ChangeValue':ChangeValue, 'ChangeRatio': ChangeRatio.text, 'TradeVolume':TradeVolume.text, 'TradesVolume': TradesVolume.text, 'Open': Open.text, 'Close': Close.text, 'High': high, 'Low': low }, ignore_index = True)
 
-# Exporting the dataframe into an index format JSON file named "TasiExtract".
+# Exporting the dataframe into an index format JSON file named "TasiMarketExtract".
 df.to_json(orient='index', path_or_buf="TasiMarketExtract.json")
