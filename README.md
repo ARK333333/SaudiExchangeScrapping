@@ -1,5 +1,5 @@
 # SaudiExchangeScrapping
-Three Python programs that utilizes Selenium and Pandas to scrap the following Saudi Exchange's fields from the main market page: 
+Three Python programs that utilizes Selenium and Pandas to scrap the following Saudi Exchange's data: 
 - StockData.py:
 	- Ticker identifier  
 	- Last trade 
