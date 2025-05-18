@@ -1,32 +1,86 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
-import sqlalchemy
+from selenium.webdriver.common.action_chains import ActionChains
 
 # URL source
-url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/ourmarkets/main-market-watch/indices-performance?locale=en'
+url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/newsandreports/reports-publications/historical-reports/'
 
-# initate WebDriver and get the targeted website URl
-driver = webdriver.Chrome(service=Service('/Users/malsaif/Documents/chromedriver-mac-x64/chromedriver'))
+driver = webdriver.Firefox(options=Options())
+
 driver.get(url)
-# Web scraping addresses + segments operations for parts needed
-Value = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[2]/div[3]/div/div/table/tbody/tr/td[2]')
-ChangeValue = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[1]/div/div[2]').get_attribute("innerHTML").split("<i></i>")[1].split('(')[0]
-ChangeRatio = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[2]/div/section/section/div/div[2]/div[2]/div[3]/div/div/table/tbody/tr/td[3]')
-TradeVolume = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[7]/strong')
-TradesVolume = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[5]/strong')
-Open = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[2]/strong')
-Close = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[1]/strong')
-high = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[3]/strong').get_attribute("innerHTML").split("-")[0]
-low = driver.find_element(By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[3]/div/section/section/section[2]/section[1]/div[1]/ul/li[3]/strong').get_attribute("innerHTML").split("-")[1]
-PTE = 0 # driver.find_elements(By.XPATH, '')
-BVM = 0  # driver.find_elements(By.XPATH, '')
+dropdown = WebDriverWait(driver, 30).until(
+    EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[1]/div/div/button')))
+driver.execute_script("arguments[0].click();", dropdown)
+
+market = WebDriverWait(driver, 30).until(
+    EC.presence_of_element_located((By.XPATH, '//*[@id="bs-select-1-1"]')))
+market.click()
+
+#sectors scrape
+dropdown_sectors = WebDriverWait(driver, 30).until(
+    EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[2]/div/div/button')))
+driver.execute_script("arguments[0].click();", dropdown_sectors)
+
+# Wait for dropdown to be fully visible
+WebDriverWait(driver, 30).until(
+    EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[2]/div/div/div/div[2]/ul')))
+
+# Get all sector items directly with a single call
+sector_items = WebDriverWait(driver, 30).until(
+    EC.presence_of_all_elements_located((By.XPATH, '//html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[2]/div/div/div/div[2]/ul/li')))
+
+# loop through the sectors
+for i in range(len(sector_items)):
+    # Click on the sector
+    print(f"Attempting to click: {sector_items[i].text}")
+    ActionChains(driver).move_to_element(sector_items[i]).click().perform()
+    driver.execute_script("arguments[0].click();", dropdown_sectors)
+
+# Print the sector you want to click
+
+# Wait explicitly for this specific item to be clickable
+# WebDriverWait(driver, 10).until(
+#     EC.element_to_be_clickable((By.XPATH, f"//li[contains(text(), '{sector_items[3].text}')]")))
+
+# Click using the action chain for more reliable clicking
+
+
+# Alternative clicking approach (if needed)
+# driver.execute_script("arguments[0].scrollIntoView(true);", sector_items[3])
+# driver.execute_script("arguments[0].click();", sector_items[3])
+
+# for sector in sectors_list:
+#     print(sector.text)
+
+#     # Click on the sector
+#     driver.execute_script("arguments[0].click();", sector)
+#     print(sector.text, "clicked")
+#     # Wait for the entities to load
+#     print(entities_scrape())
+    
+#     #go back to dropmenu
+#     driver.execute_script("arguments[0].click();", dropdown_sectors)
+
+
+
+    # sector_element = WebDriverWait(driver, 30).until(
+    #     EC.presence_of_element_located((By.XPATH, f'//li[contains(text(), "{sector}")]')))
+    # driver.execute_script("arguments[0].click();", sector_element)
+    # # entities = entities_scrape()
+    # # for entity in entities:
+    # #     print(entity.text)
+    # driver.execute_script("arguments[0].click();", dropdown_sectors)
 
 # Transferring data into a dataframe using Panda
-df = pd.DataFrame(columns =["Value", "ChangeValue", "ChangeRatio", "TradeVolume", "TradesVolume", "PTE", "BVM", "Open", "Close"])
-df = df._append({'Value': Value.text, 'ChangeValue':ChangeValue, 'ChangeRatio': ChangeRatio.text, 'TradeVolume':TradeVolume.text, 'TradesVolume': TradesVolume.text, 'Open': Open.text, 'Close': Close.text, 'High': high, 'Low': low }, ignore_index = True)
+# df = pd.DataFrame(columns =["Value", "ChangeValue", "ChangeRatio", "TradeVolume", "TradesVolume", "PTE", "BVM", "Open", "Close"])
+# df = df._append({'Value': Value.text, 'ChangeValue':ChangeValue, 'ChangeRatio': ChangeRatio.text, 'TradeVolume':TradeVolume.text, 'TradesVolume': TradesVolume.text, 'Open': Open.text, 'Close': Close.text, 'High': high, 'Low': low }, ignore_index = True)
 
-# Exporting the dataframe into an index format JSON file named "TasiMarketExtract".
-df.to_json(orient='index', path_or_buf="TasiMarketExtract.json")
+# # Exporting the dataframe into an index format JSON file named "TasiMarketExtract".
+# df.to_json(orient='index', path_or_buf="TasiMarketExtract.json")
