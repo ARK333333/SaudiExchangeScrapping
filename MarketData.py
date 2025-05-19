@@ -8,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 from selenium.webdriver.common.action_chains import ActionChains
-
+import time
 # URL source
 url = 'https://www.saudiexchange.sa/wps/portal/saudiexchange/newsandreports/reports-publications/historical-reports/'
 
@@ -36,11 +36,55 @@ WebDriverWait(driver, 30).until(
 sector_items = WebDriverWait(driver, 30).until(
     EC.presence_of_all_elements_located((By.XPATH, '//html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[2]/div/div/div/div[2]/ul/li')))
 
+def entities_scrape():
+    time.sleep(2)
+    #entities scrape
+    dropdown_entities = WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[3]/div[1]/div/button')))
+    driver.execute_script("arguments[0].click();", dropdown_entities)
+
+    # Wait for dropdown to be fully visible
+    entities = WebDriverWait(driver, 30).until(
+        EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[3]/div[1]/div/div/div[2]/ul')))
+
+    # Get all entities items directly with a single call
+    entities_items = WebDriverWait(driver, 30).until(
+        EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[3]/div[1]/div/div/div[2]/ul/li')))
+    
+    # ActionChains(driver).move_to_element(entities_items[1]).click().perform()
+    print("Entities items found:", len(entities_items))
+    # loop through the entities
+    for i in range(len(entities_items)):
+        if i == 0:
+            continue
+        # Re-fetch the entities list to avoid stale element issues
+        entities_items = WebDriverWait(driver, 30).until(
+            EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[3]/div[1]/div/div/div[2]/ul/li'))
+        )
+        time.sleep(1)
+        # Click on the entities
+        print(f"Attempting to click: {entities_items[i].text}")
+        ActionChains(driver).move_to_element(entities_items[i]).click().perform()
+
+        # Reopen the dropdown to refresh the list
+        dropdown_entities = WebDriverWait(driver, 30).until(
+            EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/main/section/div[2]/div[3]/div[1]/div/section/section[2]/div/div[3]/div[1]/div/button'))
+        )
+        driver.execute_script("arguments[0].click();", dropdown_entities)
+
+    return dropdown_entities
+
 # loop through the sectors
 for i in range(len(sector_items)):
+    if i == 0:
+        continue
     # Click on the sector
     print(f"Attempting to click: {sector_items[i].text}")
     ActionChains(driver).move_to_element(sector_items[i]).click().perform()
+
+    entities_scrape()
+    
+    #go back to dropmenu
     driver.execute_script("arguments[0].click();", dropdown_sectors)
 
 # Print the sector you want to click
